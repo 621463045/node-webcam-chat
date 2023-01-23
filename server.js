@@ -10,14 +10,14 @@
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
-const { v4: uuidv4 } = require("uuid");
+const { v4: uuidv4 } = require("uuid"); // สร้าง uuidv4 เพื่อสุ่ม Host 
 
 /**
  * This line imports the ExpressPeerServer module from the peer library, 
  * and the next line creates an options object with the debug property 
  * set to true.
  */
-const { ExpressPeerServer } = require("peer");
+const { ExpressPeerServer } = require("peer"); // ดึงตัวเเปร peer เพื่อเรียกใช้ server เพื่อเช็ต error ของโค๊ตโดยใช้ตัวเเปร debug
 const opinions = {
     debug: true,
 }
@@ -28,7 +28,7 @@ const opinions = {
  * and attaches it to the HTTP server. 
  * The cors property is used to allow connections from any origin.
  */
-app.set("view engine", "ejs");
+app.set("view engine", "ejs"); // ตั้งค่า view engine เป้น ejs เพื่อมเชื่อกับ http เพื่อใช้ในการเชื่อมต่อต้นทาง
 const io = require("socket.io")(server, {
     cors: {
         origin: '*'
@@ -40,7 +40,7 @@ const io = require("socket.io")(server, {
  * and serve the contents of the public directory as static assets.
  */
 
-app.use("/peerjs", ExpressPeerServer(server, opinions));
+app.use("/peerjs", ExpressPeerServer(server, opinions));    
 app.use(express.static("public"));
 
 
@@ -50,7 +50,7 @@ app.use(express.static("public"));
  * created by uuidv4()
  */
 
-app.get("/", (req, res) => {
+app.get("/", (req, res) => {  // สร้าง route เพื่อสุ่มไอดีห้องโดยใช้ uuidv4
     res.redirect(`/${uuidv4()}`);
 });
 
@@ -60,7 +60,7 @@ app.get("/", (req, res) => {
  * and renders the room.ejs view with the roomId parameter passed in.
  */
 
-app.get("/:room", (req, res) => {
+app.get("/:room", (req, res) => { // สร้าง route ชื่อ room เเละเเสดงโดย room.ejs ด้วย paramitor roomid ที่ส่งเข้ามา
     res.render("room", { roomId: req.params.room });
 });
 
@@ -75,7 +75,7 @@ app.get("/:room", (req, res) => {
  * and when a message is received, 
  * it emits the message and the userName to all clients in the room.
  */
-io.on("connection", (socket) => {
+io.on("connection", (socket) => { //เชื่อม client roomid โดยการใช้ roomId, userId เเละ userName รับข้อความเเละชื้่อ 1วินาทีเพื่อส่งไปให้คนในห้องทั้งหมด
     socket.on("join-room", (roomId, userId, userName) => {
         socket.join(roomId);
         setTimeout(() => {
@@ -90,5 +90,5 @@ io.on("connection", (socket) => {
 /**This line starts the server and 
  * listens on the port specified in the 
  * PORT environment variable or port 3030 if it is not set. */
-server.listen(process.env.PORT || 3030);
+server.listen(process.env.PORT || 3030); // รับข้อมูลจาก port 3030 เพื่อใช้งาน
 
